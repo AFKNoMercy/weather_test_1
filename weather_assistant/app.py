@@ -76,4 +76,6 @@ if st.button("Xem dự báo"):
         st.subheader("🍽️ Gợi ý món ăn phù hợp:")
         st.success(food_suggestion(weather['temp']))
     else:
-        st.error("❌ Không thể lấy dữ liệu. Kiểm tra tên thành phố hoặc API key.")
+        st.error("❌ Không thể lấy dữ liệu. Kiểm tra tên thành phố.")
+        st.markdown("📝 *Lưu ý: Nên viết không dấu. Ví dụ: `Hanoi`, `Ho Chi Minh`*")
+        st.markdown("📝 *Lưu ý: Hãy thử lại với tên của tỉnh/thành phố*")
