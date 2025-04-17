@@ -54,7 +54,9 @@ def food_suggestion(temp):
 st.set_page_config(page_title="Trợ lý thời tiết AI", page_icon="🌤️")
 st.title("🌤️ Trợ Lý Thời Tiết AI")
 
-city = st.text_input("🌍 Nhập tên thành phố (VD: Hanoi, Ho Chi Minh)    (* Nên viết không dấu)", "Hanoi")
+city = st.text_input("🌍 Nhập tên thành phố", "Hanoi")
+st.markdown("📝 *Lưu ý: Nên viết không dấu. Ví dụ: `Hanoi`, `Ho Chi Minh`*")
+
 
 if st.button("Xem dự báo"):
     weather = get_weather(city)
