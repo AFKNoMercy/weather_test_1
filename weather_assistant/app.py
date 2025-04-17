@@ -79,3 +79,10 @@ if st.button("Xem dự báo"):
         st.error("❌ Không thể lấy dữ liệu. Kiểm tra tên thành phố.")
         st.markdown("📝 *Gợi ý: Nên viết không dấu. Ví dụ: `Hanoi`, `Ho Chi Minh`*")
         st.markdown("📝 *Lưu ý: Hãy thử lại với tên của tỉnh/thành phố thay cho tên huyện/thị xã*")
+
+st.markdown("""
+    <script>
+        document.title = "Trợ lý thời tiết AI";
+    </script>
+""", unsafe_allow_html=True)
+
