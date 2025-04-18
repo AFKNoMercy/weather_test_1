@@ -2,16 +2,31 @@ import streamlit as st
 import requests
 import os
 
-# Lấy API key từ biến môi trường (Streamlit secrets)
+# Lấy API key từ biến môi trường
 WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
 
-# --- Hàm lấy dữ liệu thời tiết ---
-def get_weather(city):
+# --- Hàm lấy thời tiết hôm nay ---
+def get_weather_today(city):
+    url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={WEATHER_API_KEY}&units=metric&lang=vi"
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        return {
+            "temp": data["main"]["temp"],
+            "desc": data["weather"][0]["description"],
+            "humidity": data["main"]["humidity"],
+            "wind": data["wind"]["speed"]
+        }
+    else:
+        return None
+
+# --- Hàm lấy dự báo thời tiết ngày mai ---
+def get_weather_tomorrow(city):
     url = f"https://api.openweathermap.org/data/2.5/forecast?q={city}&appid={WEATHER_API_KEY}&units=metric&lang=vi"
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
-        tomorrow_data = data['list'][1]  # Dự báo gần nhất của ngày mai (3h một bản)
+        tomorrow_data = data['list'][1]  # Dự báo gần nhất của ngày mai (3 giờ/lần)
         return {
             "temp": tomorrow_data["main"]["temp"],
             "desc": tomorrow_data["weather"][0]["description"],
@@ -57,27 +72,50 @@ st.title("🌤️ Trợ Lý Thời Tiết AI")
 city = st.text_input("🌍 Nhập tên thành phố", "Hanoi")
 st.markdown("📝 *Lưu ý: Nên viết không dấu. Ví dụ: `Hanoi`, `Ho Chi Minh`*")
 
+col1, col2 = st.columns(2)
 
-if st.button("Xem dự báo"):
-    weather = get_weather(city)
-    if weather:
-        st.subheader(f"📆 Dự báo thời tiết ngày mai tại {city.title()}:")
-        st.write(f"🌡️ Nhiệt độ: {weather['temp']}°C")
-        st.write(f"🌦️ Thời tiết: {weather['desc']}")
-        st.write(f"💧 Độ ẩm: {weather['humidity']}%")
-        st.write(f"💨 Gió: {weather['wind']} m/s")
+with col1:
+    if st.button("📆 Xem thời tiết hôm nay"):
+        weather = get_weather_today(city)
+        if weather:
+            st.subheader(f"📆 Thời tiết hôm nay tại {city.title()}:")
+            st.write(f"🌡️ Nhiệt độ: {weather['temp']}°C")
+            st.write(f"🌦️ Thời tiết: {weather['desc']}")
+            st.write(f"💧 Độ ẩm: {weather['humidity']}%")
+            st.write(f"💨 Gió: {weather['wind']} m/s")
 
-        st.subheader("👕 Gợi ý trang phục:")
-        st.info(suggest_outfit(weather['temp']))
+            st.subheader("👕 Gợi ý trang phục:")
+            st.info(suggest_outfit(weather['temp']))
 
-        st.subheader("🛡️ Biện pháp phòng tránh:")
-        st.warning(weather_advice(weather['desc']))
+            st.subheader("🛡️ Biện pháp phòng tránh:")
+            st.warning(weather_advice(weather['desc']))
 
-        st.subheader("🍽️ Gợi ý món ăn phù hợp:")
-        st.success(food_suggestion(weather['temp']))
-    else:
-        st.error("❌ Không thể lấy dữ liệu. Kiểm tra tên thành phố.")
-        st.markdown("📝 *Gợi ý: Nên viết không dấu. Ví dụ: `Hanoi`, `Ho Chi Minh`*")
-        st.markdown("📝 *Lưu ý: Hãy thử lại với tên của tỉnh/thành phố thay cho tên huyện/thị xã*")
+            st.subheader("🍽️ Gợi ý món ăn phù hợp:")
+            st.success(food_suggestion(weather['temp']))
+        else:
+            st.error("❌ Không thể lấy dữ liệu hôm nay. Kiểm tra lại tên thành phố.")
+
+with col2:
+    if st.button("📅 Xem dự báo ngày mai"):
+        weather = get_weather_tomorrow(city)
+        if weather:
+            st.subheader(f"📅 Dự báo thời tiết ngày mai tại {city.title()}:")
+            st.write(f"🌡️ Nhiệt độ: {weather['temp']}°C")
+            st.write(f"🌦️ Thời tiết: {weather['desc']}")
+            st.write(f"💧 Độ ẩm: {weather['humidity']}%")
+            st.write(f"💨 Gió: {weather['wind']} m/s")
+
+            st.subheader("👕 Gợi ý trang phục:")
+            st.info(suggest_outfit(weather['temp']))
+
+            st.subheader("🛡️ Biện pháp phòng tránh:")
+            st.warning(weather_advice(weather['desc']))
+
+            st.subheader("🍽️ Gợi ý món ăn phù hợp:")
+            st.success(food_suggestion(weather['temp']))
+        else:
+            st.error("❌ Không thể lấy dữ liệu ngày mai. Kiểm tra lại tên thành phố.")
+            st.markdown("📝 *Gợi ý: Nên viết không dấu. Ví dụ: `Hanoi`, `Ho Chi Minh`*")
+            st.markdown("📝 *Lưu ý: Hãy thử lại với tên của tỉnh/thành phố thay cho tên huyện/thị xã*")
 
 
