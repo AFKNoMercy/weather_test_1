@@ -72,8 +72,13 @@ st.title("🌤️ Trợ Lý Thời Tiết AI")
 city = st.text_input("🌍 Nhập tên thành phố", "Hanoi")
 st.markdown("📝 *Lưu ý: Nên viết không dấu. Ví dụ: `Hanoi`, `Ho Chi Minh`*")
 
-btn_today = st.button("📆 Xem thời tiết hôm nay")
-btn_tomorrow = st.button("📅 Xem dự báo ngày mai")
+col1, col2 = st.columns(2)
+
+with col1:
+    btn_today = st.button("📆 Xem thời tiết hôm nay")
+
+with col2:
+    btn_tomorrow = st.button("📅 Xem dự báo ngày mai")
 
 if btn_today:
     weather = get_weather_today(city)
